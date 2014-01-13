@@ -1,0 +1,141 @@
+extends layout
+
+block styles
+    link(rel='stylesheet', href='/css/style.css')
+
+block scripts
+    script(type='text/javascript' src='/js/require.js' data-main="/js/app")
+
+    script.
+        //(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+        //function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+        //e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+        //e.src='//www.google-analytics.com/analytics.js';
+        //r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+        //ga('create','UA-XXXXX-X');ga('send','pageview');
+
+block content
+    canvas(id="background" class="fixed full")
+    div(class="page-content base")
+        h1= title
+        nav Chrissi Chrissi Nav This Stuff
+        div(class="post-content")
+            p FEB 28
+                sup TH
+                 , 2013
+            p WebKit box logo For many of us developers, WebKit is a black box. We throw HTML, CSS, JS and a bunch of assets at it, and WebKit, somehow.. magically, gives us a webpage that looks and works well. But in fact, as my colleague Ilya Grigorik puts it…
+
+            p WebKit isn’t a black box. It’s a white box. And not just that, but an open, white box.
+
+            p So let’s take a moment to understand some things:
+
+            p What is WebKit?
+            p What isn’t WebKit?
+            p How is WebKit used by WebKit-based browsers?
+            p Why are all WebKits not the same?
+            p Now, especially with the news that Opera has moved to WebKit, we have a lot of WebKit browsers out there, but its pretty hard to know what they share and where they part ways. Below we’ll hopefully shine some light on this. As a result you’ll be able to diagnose browser differences better, report bugs at the right tracker, and understand how to develop against specific browsers more effectively.
+
+            p Standard Web Browser Components
+
+            p Let’s lay out a few components of the modern day web browser:
+
+            p Parsing (HTML, XML, CSS, JavaScript)
+            p Layout
+            p Text and graphics rendering
+            p Image decoding
+            p GPU interaction
+            p Network access
+            p Hardware acceleration
+            p Which of those are shared in WebKit-based browsers? Pretty much only the first two.
+
+            p The others are handled by individual WebKit ports. Let’s review what that means…
+
+            p The WebKit Ports
+
+            p There are different “ports” of WebKit, but allow me to let Ariya Hidayat, WebKit hacker and eng director at Sencha to explain:
+
+            p What is the popular reference to WebKit is usually Apple’s own flavor of WebKit which runs on Mac OS X (the first and the original WebKit library). As you can guess, the various interfaces are implemented using different native libraries on Mac OS X, mostly centered around CoreFoundation. For example, if you specify a flat colored button with specific border radius, well WebKit knows where and how to draw that button. However, the final actual responsibility of drawing the button (as pixels on the user’s monitor) falls into CoreGraphics.
+
+            p As mentioned above, using CG is unique to the Mac port. Chrome on Mac uses Skia here.
+
+            p With time, WebKit was “ported” into different platform, both desktop and mobile. Such flavor is often called “a WebKit port”. For Safari Windows, Apple themselves also ported WebKit to run on Windows, using the Windows version of its (limited implementation of) CoreFoundation library.
+
+            p … though Safari for Windows is now dead.
+
+            p Beside that, there were many other “ports” as well (see the full list). Google has created and continues to maintain its Chromium port. There is also WebKitGtk which is based on Gtk+. Nokia (through Trolltech, which it acquired) maintains the Qt port of WebKit, popular as its QtWebKit module.
+
+            p Some of the ports of WebKit
+
+            p Safari
+            p Safari for OS X and Safari for Windows are two different ports
+            p WebKit nightly is an edge build of the Mac port that’s used for Safari. More later…
+            p Mobile Safari
+            p Maintained in a private branch, but lately being upstreamed
+            p Chrome on iOS (using Apple’s WebView; more on it’s differences later)
+            p Chrome (Chromium)
+            p Chrome on Android (using the Chromium port directly)
+            p Chromium also powers Yandex Browser, 360 Browser, Sogou Browser, and soon, Opera.
+            p Android Browser
+            p Used the latest WebKit source at the time
+            p Plenty more ports: Amazon Silk, Dolphin, Blackberry, QtWebKit, WebKitGTK+, The EFL port (Tizen), wxWebKit, WebKitWinCE, etc
+            p Different ports can have different focuses. The Mac port’s focus is split between Browser and OS, and introduces Obj-C and C++ bindings to embed the renderer into native applications. Chromium’s focus is purely on the browser. QtWebKit offers its port for applications to use as a runtime or rendering engine within its cross-platform GUI application architecture.
+
+            p What’s shared in all WebKit browsers
+
+            p First, let’s review the commonalities shared by all WebKit ports.
+
+            p You know it’s funny. I tried writing this a few times.
+            p Each time I got corrected by Chrome team members, as you’ll see…
+            p So first, WebKit parses HTML the same way. Well, except Chromium is the only port so far to enable threaded HTML parsing support.
+            p … Okay, but once parsed, the DOM tree is constructed the same. Well, actually Shadow DOM is only turned on for the Chromium port, so DOM construction varies. Same goes for custom elements.
+            p … Okay, well WebKit creates a window object and document object for everyone. True, though the properties and constructors it exposes can be conditional on the feature flags enabled.
+            p … CSS parsing is the same, though. Slurping up your CSS and turning it into CSSOM’s pretty standard. Yeah, though Chrome accepts just the -webkit- prefix whereas Apple and other ports accept legacy prefixes like -khtml- and -apple-.
+            p … Layout.. positioning? Those are the bread and butter. Same, right? Come on! Sub-pixel layout and saturated layout arithmetic is part of WebKit but differs from port to port.
+            p Super.
+            p So, it’s complicated.
+
+            p Just like how Flickr and Github implement features behind flags, WebKit does the same. This allows ports to enable/disable all sorts of functionality with WebKit’s compile-time Feature Flags. Features can also be exposed as run-time flags either through command line switches (Chromium’s here)  or configuration like about:flags.
+
+            p All right, well let’s try again to codify what’s the same in WebKit land…
+
+            p What’s common to every WebKit port
+
+            p The DOM, window, document
+            p more or less
+            p CSS parsing, property/value handling
+            p sans vendor prefix handling
+            p HTML parsing and DOM construction
+            p same if we suspended belief in Web Components
+            p All layout and positioning
+            p Flexbox, Floats, block formatting contexts… all shared
+            p The UI and instrumentation for the Chrome DevTools aka WebKit Inspector.
+            p Though since last April, Safari uses it’s own, non-WebKit, closed-source UI for Safari Inspector
+            p Features like contenteditable, pushState, File API, most SVG, CSS Transform math, Web Audio API, localStorage
+            p Though backends vary. Each port may use a different storage layer for localStorage and may use different audio APIs for Web Audio API.
+            p Plenty of other features &amp; functionality
+            p It gets a little murky in those areas. Let’s try some differences that are much less murky.
+
+            p Now, what’s not shared in WebKit ports:
+
+            p Anything on the GPU
+            p 3D Transforms
+            p WebGL
+            p Video decoding
+            p 2D drawing to the screen
+            p Antialiasing approaches
+            p SVG &amp; CSS gradient rendering
+            p Text rendering &amp; hyphenation
+            p Network stack (SPDY, prerendering, WebSocket transport)
+            p A JavaScript engine
+            p JavaScriptCore is in the WebKit repo. There are bindings in WebKit for both it and V8
+            p Rendering of form controls
+            p &lt;video&gt; &amp; &lt;audio&gt; element behavior (and codec support)
+            p Image decoding
+            p Navigating back/forward
+            p The navigation parts of pushState()
+            p SSL features like Strict Transport Security and Public Key Pins
+            p Let’s take one of these: 2D graphics Depending on the port, we’re using completely different libraries to handle drawing to screen:
+
+        hr
+
+        div(class="footer") Footer

@@ -1,0 +1,17 @@
+{
+  "name": "application-name",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "NODE_PATH=./app/controllers NODE_ENV=development nodemon app.js",
+    "stop": "forever stop app.js"
+  },
+  "dependencies": {
+    "express": "latest",
+    "jade": "latest",
+    "mongoose": "latest",
+    "passport": "latest",
+    "less-middleware": "latest",
+    "connect": "latest"
+  }
+}
