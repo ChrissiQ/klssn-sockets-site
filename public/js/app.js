@@ -41,10 +41,10 @@ require(['jquery', 'underscore', 'backbone', 'domReady', 'socket',
                 socket.emit('my other event', { my: 'data' })
             })
 
-            socket.on('newBlock', function (data) {
-                console.log("NEW BLOCK")
+            socket.on('newBlock', function (block) {
+                console.log("New block received", block)
+                appView.trigger('drawBlock', block)
             })
-            socket.emit('newBlock', {})
 
             var resizeTimer = null
 

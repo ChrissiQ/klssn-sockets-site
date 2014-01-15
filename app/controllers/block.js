@@ -20,6 +20,7 @@ exports.index = function(req, res){
 }
 
 exports.create = function(req, res){
+  console.log("REQUEST MADE:", req)
   var block = new Block({'x' : 0, 'y' : 0, 'h' : 0})
   block.save()
   res.send('')

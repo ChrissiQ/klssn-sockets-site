@@ -8,6 +8,9 @@ define(['jquery', 'underscore', 'backbone', 'views/canvas', 'collections/blocks'
                 console.log("Init.")
                 this.setElement('body')
                 Blocks.fetch({complete: function(res){console.log("Fetched blocks.")}})
+                this.on('drawBlock', function (event) {
+                    this.drawBlock(event)
+                })
             },
 
             lastHue: 0,
@@ -15,7 +18,8 @@ define(['jquery', 'underscore', 'backbone', 'views/canvas', 'collections/blocks'
             events: {
                 'mousedown' : 'mousedown',
                 'mouseup'   : 'mouseup',
-                'mousemove' : 'mousemove'
+                'mousemove' : 'mousemove',
+                'drawBlock' : 'drawBlock'
             },
 
             csrf: $('#_csrf').val(),
@@ -31,6 +35,11 @@ define(['jquery', 'underscore', 'backbone', 'views/canvas', 'collections/blocks'
                 console.log("Mousedown")
                 this.isMouseDown = true
                 this.draw()
+            },
+
+            drawBlock: function (block) {
+                console.log("Drawing block triggered by socket")
+                Blocks.add(block)
             },
 
             draw: function(){

@@ -1,14 +1,19 @@
+
+var mongoose= require('mongoose')
+  , Block   = mongoose.model('Block')
+
+var index   = require('index')
+var user    = require('user')
+var post    = require('post')
+var block   = require('block')
+
 module.exports = function (app, io) {
 
-  var index   = require('index')
-
-  console.log("Index:", index)
-  var user    = require('user')
-  var post    = require('post')
-  var block   = require('block')
-
-  io.sockets.on('connection', function(){
-    console.log("Detecting new connection.")
+  io.sockets.on('connection', function(socket){
+    socket.on('newBlock', function(data){
+      var block = new Block(data)
+      io.sockets.emit('newBlock', block)
+    })
   })
 
   app.get('/', index.index)
