@@ -4,6 +4,7 @@
  */
 
 var express   = require('express')
+var http      = require('http')
 var path      = require('path')
 var fs        = require('fs')
 var connect   = require('connect')
@@ -57,6 +58,10 @@ app.use(express.methodOverride())
 app.use(express.cookieParser())
 app.use(express.cookieSession({secret:'abc124'}))
 app.use(express.csrf())
+app.use(function(req, res, next){
+    res.locals.token = req.csrfToken()
+    next()
+})
 app.use(app.router)
 app.use(lessMiddleware({
   dest: path.join(__dirname, 'public/css'),
@@ -71,17 +76,15 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler())
 }
 
-// router
-require('./router')(app)
 
-// Start the app by listening on <port>
-var port = process.env.PORT || 3000
-app.listen(port)
-console.log('Express app started on port '+port)
+var server = http.createServer(app)
+var io = require('socket.io').listen(server)
+// router
+require('./router')(app, io)
 
 // Expose app
 module.exports = app
 
-//http.createServer(app).listen(app.get('port'), function(){
-//  console.log('Express server listening on port ' + app.get('port'));
-//});
+server.listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'))
+})

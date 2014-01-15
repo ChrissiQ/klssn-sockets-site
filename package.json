@@ -7,11 +7,12 @@
     "stop": "forever stop app.js"
   },
   "dependencies": {
+    "connect": "latest",
     "express": "latest",
     "jade": "latest",
+    "less-middleware": "latest",
     "mongoose": "latest",
     "passport": "latest",
-    "less-middleware": "latest",
-    "connect": "latest"
+    "socket.io": "latest"
   }
 }

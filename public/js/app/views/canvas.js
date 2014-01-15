@@ -5,44 +5,33 @@ define(['jquery', 'underscore', 'backbone'],
         var CanvasView = Backbone.View.extend({
 
             initialize: function(){
-                this.setElement('canvas#background');
-                //console.log(this.el);
-                this.el.width  = $('body').innerWidth();
-                this.el.height = $('body').innerHeight();
-                this.ctx = this.el.getContext('2d');
-                this.ctx.fillStyle = "rgb(200,0,0)";
-                this.ctx.lineWidth = 20;
-
-                //var canvas = $('#background')[0];
-                //canvas.width = $(window).innerWidth();
-                //canvas.height = $(window).innerHeight();
-                //var ctx = canvas.getContext('2d');
-
-                //ctx.fillStyle = "rgb(200,0,0)";
+                this.setElement('canvas#background')
+                this.ctx        = this.el.getContext('2d')
+                this.blockSize  = 20
+                this.reset()
             },
 
-            resize: function(event){
-                console.log(event);
-
-                this.render();
+            resize: function (event) {
+                this.render()
             },
 
-            render: function(){
-                this.imageData = this.ctx.getImageData(0,0,this.el.width,this.el.height);
+            reset: function () {
+                this.el.width  = $('body').innerWidth()
+                this.el.height = $('body').innerHeight()
+                this.origin = {
+                    x: this.el.width/2,
+                    y: 0
+                }
+                this.ctx.translate(this.origin.x, this.origin.y)
+            },
 
-                var width = this.el.width;
-                var height = this.el.height;
-
-                this.el.width  = $('body').innerWidth();
-                this.el.height = $('body').innerHeight();
-                this.ctx.putImageData(this.imageData,0,0);
-                
-                this.ctx.translate( ($('body').innerWidth() - this.el.width)/2, 0);
-                console.log("Render canvas.");
+            render: function () {
+                this.reset()
+                this.trigger('render')
             }
-        });
+        })
 
-        return new CanvasView();
+        return new CanvasView()
     }
 
-);
+)

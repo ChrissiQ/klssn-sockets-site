@@ -4,6 +4,7 @@ block styles
     link(rel='stylesheet', href='/css/style.css')
 
 block scripts
+    script(src='/js/socket.io.min.js')
     script(type='text/javascript' src='/js/require.js' data-main="/js/app")
 
     script.
@@ -16,13 +17,14 @@ block scripts
 
 block content
     canvas(id="background" class="fixed full")
+    input(type='hidden', name='_csrf', id="_csrf", value=token)
     div(class="page-content base")
         h1= title
         nav Chrissi Chrissi Nav This Stuff
         div(class="post-content")
             p FEB 28
                 sup TH
-                 , 2013
+                   , 2013
             p WebKit box logo For many of us developers, WebKit is a black box. We throw HTML, CSS, JS and a bunch of assets at it, and WebKit, somehow.. magically, gives us a webpage that looks and works well. But in fact, as my colleague Ilya Grigorik puts it…
 
             p WebKit isn’t a black box. It’s a white box. And not just that, but an open, white box.

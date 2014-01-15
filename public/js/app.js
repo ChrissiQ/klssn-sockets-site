@@ -7,6 +7,8 @@ require.config({
         'underscore': 'underscore-min',
         'app'       : 'app',
         'views'     : 'app/views',
+        'models'    : 'app/models',
+        'collections':'app/collections'
     },
     shim: {
         underscore: { exports: '_' },
@@ -18,15 +20,15 @@ require.config({
             exports: 'Backbone'
         }
     }
-});
+})
 
-require(['jquery', 'underscore', 'backbone', 'domReady',
+require(['jquery', 'underscore', 'backbone', 'domReady', 'socket',
 
     'views/app',
 
     'plugins'],
 
-    function($, _, Backbone, domReady,
+    function($, _, Backbone, domReady, socket,
 
         appView
 
@@ -34,18 +36,28 @@ require(['jquery', 'underscore', 'backbone', 'domReady',
 
         domReady(function(){
 
-            var resizeTimer = null;
+            socket.on('news', function (data) {
+                console.log(data)
+                socket.emit('my other event', { my: 'data' })
+            })
+
+            socket.on('newBlock', function (data) {
+                console.log("NEW BLOCK")
+            })
+            socket.emit('newBlock', {})
+
+            var resizeTimer = null
 
             $(window).on('resize', function(event){
-                clearTimeout(resizeTimer);
+                clearTimeout(resizeTimer)
                 resizeTimer = setTimeout(function(){
-                    appView.resize(event);
-                }, 10);
-            });
+                    appView.resize(event)
+                }, 10)
+            })
 
-        });
+        })
 
-        return this;
+        return this
 
     }
-);
+)
